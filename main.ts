@@ -1,3 +1,9 @@
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Food, function (sprite, otherSprite) {
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
+    info.changeScoreBy(1)
+    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     laser = sprites.createProjectileFromSprite(img`
         . . b b b b . . 
@@ -10,7 +16,9 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         . . f f f f . . 
         `, rocketShip, 100, 0)
     laser.setFlag(SpriteFlag.DestroyOnWall, true)
+    music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.UntilDone)
 })
+let icecream: Sprite = null
 let laser: Sprite = null
 let rocketShip: Sprite = null
 scene.setBackgroundImage(img`
@@ -278,6 +286,7 @@ rocketShip = sprites.create(img`
     `, SpriteKind.Player)
 rocketShip.setScale(1.5, ScaleAnchor.Middle)
 rocketShip.setPosition(20, scene.screenHeight() / 2)
+info.setScore(0)
 game.onUpdate(function () {
     if (controller.up.isPressed()) {
         rocketShip.y += -1
@@ -285,4 +294,28 @@ game.onUpdate(function () {
     if (controller.down.isPressed()) {
         rocketShip.y += 1
     }
+})
+forever(function () {
+    pause(randint(500, 2000))
+    icecream = sprites.create(img`
+        . . . . . 3 3 b 3 3 d d 3 3 . . 
+        . . . . 3 1 1 d 3 d 1 1 1 1 3 . 
+        . . . 3 d 1 1 1 d 1 1 1 d 3 1 3 
+        . . 3 d d 1 1 1 d d 1 1 1 3 3 3 
+        . 3 1 1 d 1 1 1 1 d d 1 1 b . . 
+        . 3 1 1 1 d 1 1 1 1 1 d 1 1 3 . 
+        . b d 1 1 1 d 1 1 1 1 1 1 1 3 . 
+        . 4 b 1 1 1 1 d d 1 1 1 1 d 3 . 
+        . 4 4 d 1 1 1 1 1 1 d d d b b . 
+        . 4 d b d 1 1 1 1 1 1 1 1 3 . . 
+        4 d d 5 b d 1 1 1 1 1 1 1 3 . . 
+        4 5 d 5 5 b b d 1 1 1 1 d 3 . . 
+        4 5 5 d 5 5 d b b b d d 3 . . . 
+        4 5 5 5 d d d d 4 4 b 3 . . . . 
+        . 4 5 5 5 4 4 4 . . . . . . . . 
+        . . 4 4 4 . . . . . . . . . . . 
+        `, SpriteKind.Food)
+    icecream.setPosition(scene.screenWidth(), randint(0, scene.screenHeight()))
+    icecream.setVelocity(-50, 0)
+    icecream.setFlag(SpriteFlag.DestroyOnWall, true)
 })
