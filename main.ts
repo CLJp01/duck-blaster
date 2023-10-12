@@ -3,6 +3,9 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Food, function (sprite, othe
     sprites.destroy(otherSprite)
     info.changeScoreBy(1)
     music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
+    if (icecreamSpeed > -75) {
+        icecreamSpeed += -5
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     laser = sprites.createProjectileFromSprite(img`
@@ -18,8 +21,13 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     laser.setFlag(SpriteFlag.DestroyOnWall, true)
     music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.UntilDone)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    game.setGameOverPlayable(true, music.melodyPlayable(music.powerDown), false)
+    game.gameOver(true)
+})
 let icecream: Sprite = null
 let laser: Sprite = null
+let icecreamSpeed = 0
 let rocketShip: Sprite = null
 scene.setBackgroundImage(img`
     ................................................................................................................................................................
@@ -287,6 +295,7 @@ rocketShip = sprites.create(img`
 rocketShip.setScale(1.5, ScaleAnchor.Middle)
 rocketShip.setPosition(20, scene.screenHeight() / 2)
 info.setScore(0)
+icecreamSpeed = -10
 game.onUpdate(function () {
     if (controller.up.isPressed()) {
         rocketShip.y += -1
